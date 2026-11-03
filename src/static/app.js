@@ -90,10 +90,14 @@ document.addEventListener("DOMContentLoaded", () => {
       await fetchActivities();
       activitySelect.value = selectedActivity;
     } catch (error) {
-      messageDiv.textContent = error.message || "Failed to unregister participant. Please try again.";
+      const isUnexpectedError = error instanceof TypeError || error instanceof SyntaxError;
+      messageDiv.textContent = isUnexpectedError
+        ? "Failed to unregister participant. Please try again."
+        : error.message || "Unable to unregister participant";
       messageDiv.className = "error";
       messageDiv.classList.remove("hidden");
       removeButton.disabled = false;
+      console.error("Error unregistering participant:", error);
     }
   });
 
